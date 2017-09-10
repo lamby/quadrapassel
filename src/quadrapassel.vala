@@ -559,15 +559,21 @@ public class Quadrapassel : Gtk.Application
     {
         var keyval = upper_key (event.keyval);
 
-        if (game == null)
-            return false;
-
         if (keyval == upper_key (settings.get_int ("key-pause")))
         {
-            if (!game.game_over)
-                game.paused = !game.paused;
+            // Pressing pause with no game will start a new game.
+            if (game == null || game.game_over)
+            {
+                new_game ();
+                return true;
+            }
+
+            game.paused = !game.paused;
             return true;
         }
+
+        if (game == null)
+            return false;
 
         if (game.paused)
             return false;
